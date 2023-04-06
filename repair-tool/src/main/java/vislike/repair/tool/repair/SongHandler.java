@@ -16,11 +16,20 @@ public class SongHandler {
 
 		String inString = Files.readString(file).stripTrailing();
 		JsonNode rootNode = Json.getJsonMapper().readTree(inString);
+		
+		if(rootNode.get("_version") != null && rootNode.get("version") != null) {
+			String underscoreRemoved = rootNode.get("_version").asText().substring(1);
+			if(underscoreRemoved.compareTo(rootNode.get("version").asText()) < 0) {
+				((ObjectNode) rootNode).remove("_version");
+			} else {
+				((ObjectNode) rootNode).remove("version");
+			}
+		}
 
 		// Look for version
 		JsonNode version = rootNode.get("_version");
 		if(version == null )
-			JsonNode version = rootNode.get("version");
+			version = rootNode.get("version");
 		if (version == null) {
 			// Version is missing, add default version
 			rootNode = Json.getJsonMapper().createObjectNode().put("_version", "2.0.0").setAll((ObjectNode) rootNode);
