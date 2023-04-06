@@ -19,6 +19,8 @@ public class SongHandler {
 
 		// Look for version
 		JsonNode version = rootNode.get("_version");
+		if(version == null )
+			JsonNode version = rootNode.get("version");
 		if (version == null) {
 			// Version is missing, add default version
 			rootNode = Json.getJsonMapper().createObjectNode().put("_version", "2.0.0").setAll((ObjectNode) rootNode);
